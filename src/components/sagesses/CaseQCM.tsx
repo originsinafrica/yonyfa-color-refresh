@@ -30,8 +30,8 @@ const CaseQCM = ({ lifeCase, dynamicWord, onComplete }: Props) => {
       transition={{ duration: 0.5, delay: 0.2 }}
       className="mt-8 rounded-2xl border p-6"
       style={{
-        borderColor: "hsl(36, 40%, 25%)",
-        background: "hsl(30, 10%, 12%)",
+        borderColor: "hsl(145, 55%, 38%)",
+        background: "hsl(0, 0%, 100%)",
       }}
     >
       {/* Header */}
@@ -49,7 +49,7 @@ const CaseQCM = ({ lifeCase, dynamicWord, onComplete }: Props) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
           className="text-xs uppercase tracking-widest mb-1"
-          style={{ color: "hsl(32, 60%, 52%)" }}
+          style={{ color: "hsl(145, 55%, 38%)" }}
         >
           {lifeCase.label}
         </motion.p>
@@ -58,7 +58,7 @@ const CaseQCM = ({ lifeCase, dynamicWord, onComplete }: Props) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
           className="font-display text-lg md:text-xl"
-          style={{ color: "hsl(40, 60%, 65%)" }}
+          style={{ color: "hsl(45, 95%, 45%)" }}
         >
           {lifeCase.situation}
         </motion.p>
@@ -67,9 +67,9 @@ const CaseQCM = ({ lifeCase, dynamicWord, onComplete }: Props) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
           className="text-xs mt-2 italic"
-          style={{ color: "hsl(36, 25%, 50%)" }}
+          style={{ color: "hsl(30, 8%, 45%)" }}
         >
-          À la lumière de <span style={{ color: "hsl(32, 60%, 52%)" }}>« {dynamicWord} »</span>, que feriez-vous ?
+          À la lumière de <span style={{ color: "hsl(145, 55%, 38%)" }}>« {dynamicWord} »</span>, que feriez-vous ?
         </motion.p>
       </div>
 
@@ -92,18 +92,18 @@ const CaseQCM = ({ lifeCase, dynamicWord, onComplete }: Props) => {
               }`}
               style={{
                 borderColor: isSelected
-                  ? "hsl(32, 60%, 52%)"
-                  : "hsl(36, 25%, 22%)",
+                  ? "hsl(145, 55%, 38%)"
+                  : "hsl(40, 20%, 96%)",
                 background: isConfirmedSelected
-                  ? "hsl(32, 60%, 52%)"
+                  ? "hsl(145, 55%, 38%)"
                   : isSelected
-                  ? "hsl(32, 60%, 52%, 0.15)"
-                  : "hsl(30, 10%, 14%)",
+                  ? "hsl(145, 55%, 38%, 0.12)"
+                  : "hsl(0, 0%, 100%)",
                 color: isConfirmedSelected
-                  ? "hsl(30, 10%, 8%)"
+                  ? "hsl(30, 30%, 12%)"
                   : isSelected
-                  ? "hsl(40, 60%, 65%)"
-                  : "hsl(36, 25%, 60%)",
+                  ? "hsl(45, 95%, 45%)"
+                  : "hsl(30, 8%, 50%)",
               }}
               whileHover={!confirmed ? { scale: 1.02 } : undefined}
               whileTap={!confirmed ? { scale: 0.98 } : undefined}
@@ -127,8 +127,8 @@ const CaseQCM = ({ lifeCase, dynamicWord, onComplete }: Props) => {
             disabled={selected === null}
             className="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300"
             style={{
-              background: selected !== null ? "hsl(32, 60%, 52%)" : "hsl(36, 25%, 22%)",
-              color: selected !== null ? "hsl(30, 10%, 8%)" : "hsl(36, 25%, 45%)",
+              background: selected !== null ? "hsl(145, 55%, 38%)" : "hsl(40, 20%, 96%)",
+              color: selected !== null ? "hsl(30, 30%, 12%)" : "hsl(30, 8%, 45%)",
               cursor: selected !== null ? "pointer" : "not-allowed",
             }}
           >
@@ -144,10 +144,10 @@ const CaseQCM = ({ lifeCase, dynamicWord, onComplete }: Props) => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center"
         >
-          <p className="text-sm" style={{ color: "hsl(40, 60%, 65%)" }}>
+          <p className="text-sm" style={{ color: "hsl(45, 95%, 45%)" }}>
             ✦ Votre réflexion a été enregistrée.
           </p>
-          <p className="text-xs mt-1 italic" style={{ color: "hsl(36, 25%, 50%)" }}>
+          <p className="text-xs mt-1 italic" style={{ color: "hsl(30, 8%, 45%)" }}>
             En Phase 3, vous pourrez enregistrer votre réponse audio.
           </p>
         </motion.div>

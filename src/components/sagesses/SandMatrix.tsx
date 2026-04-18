@@ -54,7 +54,7 @@ const SandMatrix = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="mb-8 p-6 rounded-2xl border border-[hsl(36,40%,30%)] bg-[hsl(30,10%,10%)] text-center"
+            className="mb-8 p-6 rounded-2xl border border-[hsl(145,55%,38%)] bg-[hsl(0,0%,100%)] text-center"
           >
             {/* Combined trace */}
             <div className="flex justify-center mb-4">
@@ -62,7 +62,7 @@ const SandMatrix = () => {
                 leftCode={revealed.signX.code}
                 rightCode={revealed.signY.code}
                 size={120}
-                color="hsl(40, 60%, 65%)"
+                color="hsl(45, 95%, 45%)"
               />
             </div>
 
@@ -72,7 +72,7 @@ const SandMatrix = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               className="font-display text-2xl md:text-3xl mb-2"
-              style={{ color: "hsl(40, 60%, 65%)" }}
+              style={{ color: "hsl(45, 95%, 45%)" }}
             >
               {revealed.signX.name}-{revealed.signY.name}
             </motion.h3>
@@ -83,7 +83,7 @@ const SandMatrix = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
               className="text-sm md:text-base mb-1"
-              style={{ color: "hsl(36, 25%, 60%)" }}
+              style={{ color: "hsl(30, 8%, 50%)" }}
             >
               {revealed.signX.value} × {revealed.signY.value}
             </motion.p>
@@ -94,7 +94,7 @@ const SandMatrix = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7 }}
               className="font-display text-xl md:text-2xl mt-3"
-              style={{ color: "hsl(32, 60%, 52%)" }}
+              style={{ color: "hsl(145, 55%, 38%)" }}
             >
               {revealed.dynamicWord}
             </motion.p>
@@ -131,8 +131,8 @@ const SandMatrix = () => {
                   onClick={reshuffle}
                   className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all"
                   style={{
-                    background: "hsl(32, 60%, 52%)",
-                    color: "hsl(30, 10%, 8%)",
+                    background: "hsl(145, 55%, 38%)",
+                    color: "hsl(30, 30%, 12%)",
                   }}
                 >
                   Nouveau tirage
@@ -158,8 +158,8 @@ const SandMatrix = () => {
                   onClick={() => handleCellClick(row, col)}
                   className={`aspect-square rounded-[3px] transition-all duration-200 cursor-pointer ${
                     isRevealed
-                      ? "ring-2 ring-[hsl(40,60%,65%)] bg-[hsl(32,60%,52%)/0.3]"
-                      : "bg-[hsl(36,25%,20%)] hover:bg-[hsl(36,25%,28%)]"
+                      ? "ring-2 ring-[hsl(45,95%,45%)] bg-[hsl(145,55%,38%)/0.3]"
+                      : "bg-[hsl(40,20%,96%)] hover:bg-[hsl(40,15%,92%)]"
                   }`}
                   whileHover={{ scale: 1.15 }}
                   whileTap={{ scale: 0.95 }}

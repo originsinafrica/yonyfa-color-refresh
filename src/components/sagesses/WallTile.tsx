@@ -77,7 +77,7 @@ const WallTile = memo(({ consultation, index, onClick }: Props) => {
       <div
         className="absolute inset-0 pointer-events-none mix-blend-soft-light opacity-30"
         style={{
-          background: "linear-gradient(135deg, hsl(40, 33%, 96%) 0%, transparent 60%)",
+          background: "linear-gradient(135deg, hsl(0, 0%, 100%) 0%, transparent 60%)",
         }}
       />
 
