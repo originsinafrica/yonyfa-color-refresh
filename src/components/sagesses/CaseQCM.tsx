@@ -87,28 +87,28 @@ const CaseQCM = ({ lifeCase, dynamicWord, onComplete }: Props) => {
               transition={{ delay: 0.6 + i * 0.1 }}
               onClick={() => handleSelect(i)}
               disabled={confirmed}
-              className={`text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 border ${
+              className={`text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 border-2 ${
                 confirmed && !isSelected ? "opacity-30" : ""
               }`}
               style={{
                 borderColor: isSelected
-                  ? "hsl(145, 55%, 38%)"
-                  : "hsl(40, 20%, 96%)",
+                  ? optionAccent(i)
+                  : `${optionAccent(i)}55`,
                 background: isConfirmedSelected
-                  ? "hsl(145, 55%, 38%)"
+                  ? optionAccent(i)
                   : isSelected
-                  ? "hsl(145, 55%, 38%, 0.12)"
+                  ? `${optionAccent(i)}1f`
                   : "hsl(0, 0%, 100%)",
                 color: isConfirmedSelected
-                  ? "hsl(30, 30%, 12%)"
+                  ? "hsl(0, 0%, 100%)"
                   : isSelected
-                  ? "hsl(45, 95%, 45%)"
-                  : "hsl(30, 8%, 50%)",
+                  ? optionAccent(i)
+                  : "hsl(30, 8%, 35%)",
               }}
               whileHover={!confirmed ? { scale: 1.02 } : undefined}
               whileTap={!confirmed ? { scale: 0.98 } : undefined}
             >
-              <span className="mr-2 opacity-50">{String.fromCharCode(65 + i)}.</span>
+              <span className="mr-2 font-bold" style={{ color: optionAccent(i) }}>{String.fromCharCode(65 + i)}.</span>
               {opt}
             </motion.button>
           );
