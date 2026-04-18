@@ -8,6 +8,10 @@ interface Props {
   onComplete: (selectedOption: number) => void;
 }
 
+// Cycle Bénin : vert · jaune · rouge
+const ACCENTS = ["hsl(145, 55%, 38%)", "hsl(45, 95%, 45%)", "hsl(358, 75%, 52%)", "hsl(145, 55%, 38%)"];
+const optionAccent = (i: number) => ACCENTS[i % ACCENTS.length];
+
 const CaseQCM = ({ lifeCase, dynamicWord, onComplete }: Props) => {
   const [selected, setSelected] = useState<number | null>(null);
   const [confirmed, setConfirmed] = useState(false);
