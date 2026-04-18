@@ -2,6 +2,13 @@
 // Row = first value, Col = second value
 // Order: Transmission, Bienveillance, Créativité, Gratitude, Cohésion, Empathie, Authenticité, Résilience, Tolérance, Équité, Reliance, Intuition, Lucidité, Persévérance, Humilité, Patience
 
+export const DYNAMICS_AXIS: string[] = [
+  "Transmission", "Bienveillance", "Créativité", "Gratitude",
+  "Cohésion", "Empathie", "Authenticité", "Résilience",
+  "Tolérance", "Équité", "Reliance", "Intuition",
+  "Lucidité", "Persévérance", "Humilité", "Patience",
+];
+
 export const DYNAMICS_MATRIX: string[][] = [
   // Transmission →
   ["Transmission", "Éducation", "Inspiration", "Reconnaissance", "Tradition", "Compréhension", "Véracité", "Transformation", "Ouverture", "Justice", "Lignée", "Initiation", "Connaissance", "Maîtrise", "Sagesse", "Apprentissage"],
