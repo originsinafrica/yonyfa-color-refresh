@@ -143,34 +143,29 @@ const SandMatrix = () => {
         ) : null}
       </AnimatePresence>
 
-      {/* Grid */}
-      <div className="overflow-x-auto">
-        <div
-          className="grid gap-[2px] min-w-[400px]"
-          style={{ gridTemplateColumns: `repeat(16, 1fr)` }}
-        >
-          {shuffledY.map((_, row) =>
-            shuffledX.map((_, col) => {
-              const isRevealed = revealed?.row === row && revealed?.col === col;
-              return (
+      {/* Grid - hidden once a cell is revealed */}
+      {!revealed && (
+        <div className="overflow-x-auto">
+          <div
+            className="grid gap-[2px] min-w-[400px]"
+            style={{ gridTemplateColumns: `repeat(16, 1fr)` }}
+          >
+            {shuffledY.map((_, row) =>
+              shuffledX.map((_, col) => (
                 <motion.button
                   key={`${row}-${col}`}
                   onClick={() => handleCellClick(row, col)}
-                  className={`aspect-square rounded-[3px] transition-all duration-200 cursor-pointer ${
-                    isRevealed
-                      ? "ring-2 ring-[hsl(45,95%,45%)] bg-[hsl(145,55%,38%)/0.3]"
-                      : "bg-[hsl(40,20%,96%)] hover:bg-[hsl(40,15%,92%)]"
-                  }`}
+                  className="aspect-square rounded-[3px] transition-all duration-200 cursor-pointer bg-[hsl(40,20%,96%)] hover:bg-[hsl(40,15%,92%)]"
                   whileHover={{ scale: 1.15 }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 400, damping: 25 }}
                   aria-label={`Case ${row + 1}-${col + 1}`}
                 />
-              );
-            })
-          )}
+              ))
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
     </div>
   );
