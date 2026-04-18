@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import type { LifeCase } from "@/data/cases";
+import AudioRecorder from "./AudioRecorder";
 
 interface Props {
   lifeCase: LifeCase;
@@ -24,7 +25,7 @@ const CaseQCM = ({ lifeCase, dynamicWord, onComplete }: Props) => {
   const handleConfirm = () => {
     if (selected === null) return;
     setConfirmed(true);
-    setTimeout(() => onComplete(selected), 1200);
+    setTimeout(() => onComplete(selected), 600);
   };
 
   return (
@@ -40,120 +41,106 @@ const CaseQCM = ({ lifeCase, dynamicWord, onComplete }: Props) => {
     >
       {/* Header */}
       <div className="text-center mb-6">
-        <motion.span
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: "spring", delay: 0.3 }}
-          className="text-3xl block mb-2"
-        >
-          {lifeCase.emoji}
-        </motion.span>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="text-xs uppercase tracking-widest mb-1"
+        <span className="text-3xl block mb-2">{lifeCase.emoji}</span>
+        <p
+          className="text-xs uppercase tracking-widest mb-1 font-semibold"
           style={{ color: "hsl(145, 55%, 38%)" }}
         >
           {lifeCase.label}
-        </motion.p>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
+        </p>
+        <p
           className="font-display text-lg md:text-xl"
           style={{ color: "hsl(45, 95%, 45%)" }}
         >
           {lifeCase.situation}
-        </motion.p>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="text-xs mt-2 italic"
-          style={{ color: "hsl(30, 8%, 45%)" }}
-        >
-          À la lumière de <span style={{ color: "hsl(145, 55%, 38%)" }}>« {dynamicWord} »</span>, que feriez-vous ?
-        </motion.p>
+        </p>
+        <p className="text-xs mt-2 italic" style={{ color: "hsl(30, 8%, 45%)" }}>
+          À la lumière de{" "}
+          <span style={{ color: "hsl(145, 55%, 38%)" }}>« {dynamicWord} »</span>, que ferais-tu ?
+        </p>
       </div>
 
-      {/* Options */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-        {lifeCase.options.map((opt, i) => {
-          const isSelected = selected === i;
-          const isConfirmedSelected = confirmed && isSelected;
+      {/* Two-column: narrative left, options right */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        {/* LEFT — Two paragraphs */}
+        <div className="space-y-3">
+          <p className="text-sm leading-relaxed" style={{ color: "hsl(30, 8%, 25%)" }}>
+            {lifeCase.narrative[0]}
+          </p>
+          <p className="text-sm leading-relaxed" style={{ color: "hsl(30, 8%, 25%)" }}>
+            {lifeCase.narrative[1]}
+          </p>
+        </div>
 
-          return (
-            <motion.button
-              key={i}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.6 + i * 0.1 }}
-              onClick={() => handleSelect(i)}
-              disabled={confirmed}
-              className={`text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 border-2 ${
-                confirmed && !isSelected ? "opacity-30" : ""
-              }`}
+        {/* RIGHT — 4 options stacked */}
+        <div className="flex flex-col gap-2.5">
+          {lifeCase.options.map((opt, i) => {
+            const isSelected = selected === i;
+            const isConfirmedSelected = confirmed && isSelected;
+
+            return (
+              <motion.button
+                key={i}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 + i * 0.08 }}
+                onClick={() => handleSelect(i)}
+                disabled={confirmed}
+                className={`text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 border-2 ${
+                  confirmed && !isSelected ? "opacity-30" : ""
+                }`}
+                style={{
+                  borderColor: isSelected ? optionAccent(i) : `${optionAccent(i)}55`,
+                  background: isConfirmedSelected
+                    ? optionAccent(i)
+                    : isSelected
+                    ? `${optionAccent(i)}1f`
+                    : "hsl(0, 0%, 100%)",
+                  color: isConfirmedSelected
+                    ? "hsl(0, 0%, 100%)"
+                    : isSelected
+                    ? optionAccent(i)
+                    : "hsl(30, 8%, 35%)",
+                }}
+                whileHover={!confirmed ? { scale: 1.02 } : undefined}
+                whileTap={!confirmed ? { scale: 0.98 } : undefined}
+              >
+                <span className="mr-2 font-bold" style={{ color: optionAccent(i) }}>
+                  {String.fromCharCode(65 + i)}.
+                </span>
+                {opt}
+              </motion.button>
+            );
+          })}
+
+          {/* Confirm button */}
+          {!confirmed && (
+            <button
+              onClick={handleConfirm}
+              disabled={selected === null}
+              className="mt-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300"
               style={{
-                borderColor: isSelected
-                  ? optionAccent(i)
-                  : `${optionAccent(i)}55`,
-                background: isConfirmedSelected
-                  ? optionAccent(i)
-                  : isSelected
-                  ? `${optionAccent(i)}1f`
-                  : "hsl(0, 0%, 100%)",
-                color: isConfirmedSelected
-                  ? "hsl(0, 0%, 100%)"
-                  : isSelected
-                  ? optionAccent(i)
-                  : "hsl(30, 8%, 35%)",
+                background: selected !== null ? "hsl(145, 55%, 38%)" : "hsl(40, 20%, 96%)",
+                color: selected !== null ? "hsl(0, 0%, 100%)" : "hsl(30, 8%, 45%)",
+                cursor: selected !== null ? "pointer" : "not-allowed",
               }}
-              whileHover={!confirmed ? { scale: 1.02 } : undefined}
-              whileTap={!confirmed ? { scale: 0.98 } : undefined}
             >
-              <span className="mr-2 font-bold" style={{ color: optionAccent(i) }}>{String.fromCharCode(65 + i)}.</span>
-              {opt}
-            </motion.button>
-          );
-        })}
+              Valider ma réflexion
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Confirm */}
-      {!confirmed && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: selected !== null ? 1 : 0.3 }}
-          className="text-center"
-        >
-          <button
-            onClick={handleConfirm}
-            disabled={selected === null}
-            className="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300"
-            style={{
-              background: selected !== null ? "hsl(145, 55%, 38%)" : "hsl(40, 20%, 96%)",
-              color: selected !== null ? "hsl(30, 30%, 12%)" : "hsl(30, 8%, 45%)",
-              cursor: selected !== null ? "pointer" : "not-allowed",
-            }}
-          >
-            Valider ma réflexion
-          </button>
-        </motion.div>
-      )}
-
-      {/* Confirmed message */}
-      {confirmed && (
+      {/* Audio recorder — appears once a choice is selected */}
+      {selected !== null && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center"
+          transition={{ duration: 0.4 }}
+          className="mt-6 pt-6 border-t"
+          style={{ borderColor: "hsl(40, 20%, 90%)" }}
         >
-          <p className="text-sm" style={{ color: "hsl(45, 95%, 45%)" }}>
-            ✦ Votre réflexion a été enregistrée.
-          </p>
-          <p className="text-xs mt-1 italic" style={{ color: "hsl(30, 8%, 45%)" }}>
-            En Phase 3, vous pourrez enregistrer votre réponse audio.
-          </p>
+          <AudioRecorder />
         </motion.div>
       )}
     </motion.div>

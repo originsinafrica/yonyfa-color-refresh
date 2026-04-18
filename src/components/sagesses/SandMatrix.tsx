@@ -1,7 +1,8 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
 import { SIGNS, shuffle, valueToMatrixIndex, type FongbeSign } from "@/data/fongbe";
-import { DYNAMICS_MATRIX } from "@/data/dynamics";
+import { DYNAMICS_MATRIX, DYNAMICS_AXIS } from "@/data/dynamics";
 import { pickRandomCase, type LifeCase } from "@/data/cases";
 import CombinedTrace from "./CombinedTrace";
 import CaseQCM from "./CaseQCM";
@@ -13,6 +14,8 @@ interface RevealedCell {
   signX: FongbeSign;
   signY: FongbeSign;
   dynamicWord: string;
+  axisXWord: string;
+  axisYWord: string;
   lifeCase: LifeCase;
 }
 
@@ -29,13 +32,23 @@ const SandMatrix = () => {
     setQcmDone(false);
   }, []);
 
+  const closePanel = useCallback(() => {
+    setRevealed(null);
+    setQcmDone(false);
+  }, []);
+
   const handleCellClick = useCallback((row: number, col: number) => {
     const signX = shuffledX[col];
     const signY = shuffledY[row];
     const matrixRow = signY.valueIndex;
     const matrixCol = valueToMatrixIndex(signX.value);
     const dynamicWord = DYNAMICS_MATRIX[matrixRow]?.[matrixCol] ?? "";
-    setRevealed({ row, col, signX, signY, dynamicWord, lifeCase: pickRandomCase() });
+    const axisXWord = DYNAMICS_AXIS[matrixCol] ?? "";
+    const axisYWord = DYNAMICS_AXIS[matrixRow] ?? "";
+    setRevealed({
+      row, col, signX, signY, dynamicWord, axisXWord, axisYWord,
+      lifeCase: pickRandomCase(),
+    });
     setQcmDone(false);
   }, [shuffledX, shuffledY]);
 
@@ -44,73 +57,72 @@ const SandMatrix = () => {
   }, []);
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto">
       {/* Reveal panel */}
       <AnimatePresence mode="wait">
         {revealed ? (
           <motion.div
             key={`${revealed.row}-${revealed.col}`}
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
+            exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="mb-8 p-6 rounded-2xl border border-[hsl(145,55%,38%)] bg-[hsl(0,0%,100%)]"
+            className="relative mb-8 p-6 md:p-8 rounded-2xl border bg-[hsl(0,0%,100%)]"
+            style={{ borderColor: "hsl(145, 55%, 38%)" }}
           >
-            {/* Two-column layout: sign | description */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-start">
-              {/* LEFT — Sign: name + ideogram */}
-              <div className="flex flex-col items-center justify-center text-center md:py-4">
-                <motion.h3
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="font-display text-3xl md:text-4xl mb-6"
-                  style={{ color: "hsl(45, 95%, 45%)" }}
-                >
-                  {revealed.signX.name}-{revealed.signY.name}
-                </motion.h3>
+            {/* Close button */}
+            <button
+              onClick={closePanel}
+              aria-label="Fermer"
+              className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-110"
+              style={{
+                background: "hsl(40, 20%, 96%)",
+                color: "hsl(358, 75%, 52%)",
+                border: "1px solid hsl(358, 75%, 52% / 0.3)",
+              }}
+            >
+              <X size={18} />
+            </button>
 
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3, duration: 0.4 }}
-                  className="flex justify-center"
-                >
-                  <CombinedTrace
-                    leftCode={revealed.signX.code}
-                    rightCode={revealed.signY.code}
-                    size={180}
-                    color="hsl(45, 95%, 45%)"
-                  />
-                </motion.div>
+            {/* Centered sign name */}
+            <motion.h3
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="font-display text-3xl md:text-4xl text-center mb-8"
+              style={{ color: "hsl(45, 95%, 45%)" }}
+            >
+              {revealed.signX.name}-{revealed.signY.name}
+            </motion.h3>
 
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="text-sm mt-5"
+            {/* Two-column: ideogram | description */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-center">
+              {/* LEFT — Ideogram */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.25, duration: 0.5 }}
+                className="flex flex-col items-center justify-center"
+              >
+                <CombinedTrace
+                  leftCode={revealed.signX.code}
+                  rightCode={revealed.signY.code}
+                  size={200}
+                  color="hsl(45, 95%, 45%)"
+                />
+                <p
+                  className="text-xs mt-4 tracking-widest uppercase"
                   style={{ color: "hsl(30, 8%, 50%)" }}
                 >
                   {revealed.signX.value} × {revealed.signY.value}
-                </motion.p>
+                </p>
+              </motion.div>
 
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                  className="font-display text-xl md:text-2xl mt-2"
-                  style={{ color: "hsl(145, 55%, 38%)" }}
-                >
-                  {revealed.dynamicWord}
-                </motion.p>
-              </div>
-
-              {/* RIGHT — Description */}
+              {/* RIGHT — Description from PDF */}
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7, duration: 0.5 }}
-                className="text-left"
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.35, duration: 0.5 }}
               >
                 <SignDisplay
                   signXIdx={revealed.signX.index}
@@ -122,7 +134,33 @@ const SandMatrix = () => {
               </motion.div>
             </div>
 
-            {/* QCM */}
+            {/* Separator with values formula */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.55 }}
+              className="my-8 flex items-center gap-4"
+            >
+              <div className="flex-1 h-px" style={{ background: "hsl(145, 55%, 38% / 0.25)" }} />
+              <div className="text-center px-3">
+                <p
+                  className="text-[10px] uppercase tracking-widest mb-1.5 font-semibold"
+                  style={{ color: "hsl(30, 8%, 45%)" }}
+                >
+                  Invitation à considérer les valeurs
+                </p>
+                <p className="font-display text-base md:text-lg flex items-center justify-center gap-2 flex-wrap">
+                  <span style={{ color: "hsl(145, 55%, 38%)" }}>{revealed.axisYWord}</span>
+                  <span style={{ color: "hsl(30, 8%, 45%)" }}>×</span>
+                  <span style={{ color: "hsl(45, 95%, 45%)" }}>{revealed.axisXWord}</span>
+                  <span style={{ color: "hsl(30, 8%, 45%)" }}>=</span>
+                  <span style={{ color: "hsl(358, 75%, 52%)" }}>{revealed.dynamicWord}</span>
+                </p>
+              </div>
+              <div className="flex-1 h-px" style={{ background: "hsl(145, 55%, 38% / 0.25)" }} />
+            </motion.div>
+
+            {/* Case QCM */}
             {!qcmDone && (
               <CaseQCM
                 lifeCase={revealed.lifeCase}
@@ -135,14 +173,17 @@ const SandMatrix = () => {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="mt-6"
+                className="mt-6 text-center"
               >
+                <p className="text-sm mb-3" style={{ color: "hsl(45, 95%, 45%)" }}>
+                  ✦ Ta réflexion a été enregistrée.
+                </p>
                 <button
                   onClick={reshuffle}
                   className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all"
                   style={{
                     background: "hsl(145, 55%, 38%)",
-                    color: "hsl(30, 30%, 12%)",
+                    color: "hsl(0, 0%, 100%)",
                   }}
                 >
                   Nouveau tirage
@@ -176,7 +217,6 @@ const SandMatrix = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
