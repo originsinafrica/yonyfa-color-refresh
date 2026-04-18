@@ -48,7 +48,7 @@ const ConsultationModal = ({ consultation, onClose }: Props) => {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
             className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-card border border-border p-6 md:p-8 shadow-2xl"
           >
             <button
@@ -210,7 +210,7 @@ const ConsultationModal = ({ consultation, onClose }: Props) => {
                       onValueChange={c.set}
                       max={100}
                       step={1}
-                      trackColor={c.color}
+                      style={{ ["--slider-track" as string]: c.color }}
                     />
                   </div>
                 ))}
