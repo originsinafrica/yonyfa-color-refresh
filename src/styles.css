@@ -46,42 +46,44 @@
 :root {
   --radius: 0.5rem;
 
-  --background: 40 33% 96%;
+  /* Light theme — pure/soft white surfaces with Benin flag accents */
+  --background: 0 0% 100%;
   --foreground: 30 10% 15%;
 
-  --card: 40 30% 98%;
+  --card: 0 0% 100%;
   --card-foreground: 30 10% 15%;
 
-  --popover: 40 30% 98%;
+  --popover: 0 0% 100%;
   --popover-foreground: 30 10% 15%;
 
-  --primary: 30 10% 15%;
-  --primary-foreground: 40 33% 96%;
+  --primary: 145 55% 32%;
+  --primary-foreground: 0 0% 100%;
 
-  --secondary: 36 25% 90%;
-  --secondary-foreground: 30 10% 25%;
+  --secondary: 40 30% 96%;
+  --secondary-foreground: 30 10% 20%;
 
-  --muted: 36 18% 92%;
-  --muted-foreground: 30 8% 50%;
+  --muted: 40 20% 96%;
+  --muted-foreground: 30 8% 45%;
 
-  --accent: 32 60% 52%;
-  --accent-foreground: 0 0% 100%;
+  --accent: 45 95% 50%;
+  --accent-foreground: 30 30% 12%;
 
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
+  --destructive: 358 75% 50%;
+  --destructive-foreground: 0 0% 100%;
 
-  --border: 36 20% 88%;
-  --input: 36 20% 88%;
-  --ring: 32 60% 52%;
+  --border: 40 15% 88%;
+  --input: 40 15% 88%;
+  --ring: 145 55% 38%;
 
-  --hero-bg: 30 10% 12%;
-  --hero-foreground: 0 0% 100%;
-  --hero-accent: 32 60% 52%;
+  /* Hero / showcase blocks — now white-on-white with green ring */
+  --hero-bg: 0 0% 100%;
+  --hero-foreground: 30 10% 15%;
+  --hero-accent: 145 55% 38%;
 
-  /* Benin flag accents (subtle, used sparingly) */
+  /* Benin flag accents (used as primary brand accents now) */
   --benin-green: 145 55% 38%;
-  --benin-yellow: 45 90% 55%;
-  --benin-red: 358 70% 52%;
+  --benin-yellow: 45 95% 52%;
+  --benin-red: 358 75% 52%;
 }
 
 .dark {
