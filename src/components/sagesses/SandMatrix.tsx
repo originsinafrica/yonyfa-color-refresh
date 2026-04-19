@@ -1,12 +1,15 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { X, RotateCcw } from "lucide-react";
 import { SIGNS, shuffle, valueToMatrixIndex, type FongbeSign } from "@/data/fongbe";
 import { DYNAMICS_MATRIX, DYNAMICS_AXIS } from "@/data/dynamics";
 import { pickRandomCase, type LifeCase } from "@/data/cases";
 import CombinedTrace from "./CombinedTrace";
-import CaseQCM from "./CaseQCM";
 import SignDisplay from "./SignDisplay";
+import CaseCard from "./CaseCard";
+import AudioRecorder from "./AudioRecorder";
+
+type Phase = "case" | "matrix" | "revealed";
 
 interface RevealedCell {
   row: number;
@@ -16,63 +19,134 @@ interface RevealedCell {
   dynamicWord: string;
   axisXWord: string;
   axisYWord: string;
-  lifeCase: LifeCase;
 }
 
 const SandMatrix = () => {
+  const [phase, setPhase] = useState<Phase>("case");
+  const [lifeCase, setLifeCase] = useState<LifeCase>(() => pickRandomCase());
+  const [intuitiveChoice, setIntuitiveChoice] = useState<number | null>(null);
   const [shuffledX, setShuffledX] = useState(() => shuffle(SIGNS));
   const [shuffledY, setShuffledY] = useState(() => shuffle(SIGNS));
   const [revealed, setRevealed] = useState<RevealedCell | null>(null);
-  const [qcmDone, setQcmDone] = useState(false);
 
-  const reshuffle = useCallback(() => {
+  const restart = useCallback(() => {
+    setLifeCase(pickRandomCase());
+    setIntuitiveChoice(null);
     setShuffledX(shuffle(SIGNS));
     setShuffledY(shuffle(SIGNS));
     setRevealed(null);
-    setQcmDone(false);
+    setPhase("case");
   }, []);
 
-  const closePanel = useCallback(() => {
+  const openMatrix = useCallback((selectedOption: number | null) => {
+    setIntuitiveChoice(selectedOption);
+    setPhase("matrix");
+  }, []);
+
+  const closeRevealed = useCallback(() => {
     setRevealed(null);
-    setQcmDone(false);
+    setPhase("matrix");
   }, []);
 
-  const handleCellClick = useCallback((row: number, col: number) => {
-    const signX = shuffledX[col];
-    const signY = shuffledY[row];
-    const matrixRow = signY.valueIndex;
-    const matrixCol = valueToMatrixIndex(signX.value);
-    const dynamicWord = DYNAMICS_MATRIX[matrixRow]?.[matrixCol] ?? "";
-    const axisXWord = DYNAMICS_AXIS[matrixCol] ?? "";
-    const axisYWord = DYNAMICS_AXIS[matrixRow] ?? "";
-    setRevealed({
-      row, col, signX, signY, dynamicWord, axisXWord, axisYWord,
-      lifeCase: pickRandomCase(),
-    });
-    setQcmDone(false);
-  }, [shuffledX, shuffledY]);
-
-  const handleQcmComplete = useCallback(() => {
-    setQcmDone(true);
-  }, []);
+  const handleCellClick = useCallback(
+    (row: number, col: number) => {
+      const signX = shuffledX[col];
+      const signY = shuffledY[row];
+      const matrixRow = signY.valueIndex;
+      const matrixCol = valueToMatrixIndex(signX.value);
+      const dynamicWord = DYNAMICS_MATRIX[matrixRow]?.[matrixCol] ?? "";
+      const axisXWord = DYNAMICS_AXIS[matrixCol] ?? "";
+      const axisYWord = DYNAMICS_AXIS[matrixRow] ?? "";
+      setRevealed({ row, col, signX, signY, dynamicWord, axisXWord, axisYWord });
+      setPhase("revealed");
+    },
+    [shuffledX, shuffledY]
+  );
 
   return (
     <div className="w-full max-w-5xl mx-auto">
-      {/* Reveal panel */}
       <AnimatePresence mode="wait">
-        {revealed ? (
+        {/* PHASE 1 — Case card */}
+        {phase === "case" && (
           <motion.div
-            key={`${revealed.row}-${revealed.col}`}
+            key="case"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4 }}
+          >
+            <CaseCard lifeCase={lifeCase} onOpenMatrix={openMatrix} />
+          </motion.div>
+        )}
+
+        {/* PHASE 2 — Matrix */}
+        {phase === "matrix" && (
+          <motion.div
+            key="matrix"
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.97 }}
+            transition={{ duration: 0.4 }}
+          >
+            <div className="text-center mb-6">
+              <p
+                className="text-xs uppercase tracking-widest font-semibold mb-2"
+                style={{ color: "hsl(145, 55%, 38%)" }}
+              >
+                {lifeCase.emoji} {lifeCase.label}
+              </p>
+              <p
+                className="font-display text-lg md:text-xl"
+                style={{ color: "hsl(45, 95%, 45%)" }}
+              >
+                Choisis une case — laisse ta main être guidée.
+              </p>
+            </div>
+            <div className="overflow-x-auto">
+              <div
+                className="grid gap-[2px] min-w-[400px]"
+                style={{ gridTemplateColumns: `repeat(16, 1fr)` }}
+              >
+                {shuffledY.map((_, row) =>
+                  shuffledX.map((_, col) => (
+                    <motion.button
+                      key={`${row}-${col}`}
+                      onClick={() => handleCellClick(row, col)}
+                      className="aspect-square rounded-[3px] transition-all duration-200 cursor-pointer bg-[hsl(40,20%,96%)] hover:bg-[hsl(40,15%,92%)]"
+                      whileHover={{ scale: 1.15 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                      aria-label={`Case ${row + 1}-${col + 1}`}
+                    />
+                  ))
+                )}
+              </div>
+            </div>
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => setPhase("case")}
+                className="text-xs underline"
+                style={{ color: "hsl(30, 8%, 45%)" }}
+              >
+                ← Revenir à la situation
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* PHASE 3 — Revealed sign */}
+        {phase === "revealed" && revealed && (
+          <motion.div
+            key={`revealed-${revealed.row}-${revealed.col}`}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="relative mb-8 p-6 md:p-8 rounded-2xl border bg-[hsl(0,0%,100%)]"
+            className="relative p-6 md:p-8 rounded-2xl border bg-[hsl(0,0%,100%)]"
             style={{ borderColor: "hsl(145, 55%, 38%)" }}
           >
-            {/* Close button */}
             <button
-              onClick={closePanel}
+              onClick={closeRevealed}
               aria-label="Fermer"
               className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-110"
               style={{
@@ -84,7 +158,6 @@ const SandMatrix = () => {
               <X size={18} />
             </button>
 
-            {/* Centered sign name */}
             <motion.h3
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -95,9 +168,7 @@ const SandMatrix = () => {
               {revealed.signX.name}-{revealed.signY.name}
             </motion.h3>
 
-            {/* Two-column: ideogram | description */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-center">
-              {/* LEFT — Ideogram */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -118,7 +189,6 @@ const SandMatrix = () => {
                 </p>
               </motion.div>
 
-              {/* RIGHT — Description from PDF */}
               <motion.div
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -134,7 +204,7 @@ const SandMatrix = () => {
               </motion.div>
             </div>
 
-            {/* Separator with values formula */}
+            {/* Values formula */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -160,63 +230,69 @@ const SandMatrix = () => {
               <div className="flex-1 h-px" style={{ background: "hsl(145, 55%, 38% / 0.25)" }} />
             </motion.div>
 
-            {/* Case QCM */}
-            {!qcmDone && (
-              <CaseQCM
-                lifeCase={revealed.lifeCase}
-                dynamicWord={revealed.dynamicWord}
-                onComplete={handleQcmComplete}
-              />
-            )}
-
-            {qcmDone && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mt-6 text-center"
+            {/* Reminder of the case */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.65 }}
+              className="mb-6 p-4 rounded-xl"
+              style={{ background: "hsl(40, 20%, 96%)" }}
+            >
+              <p
+                className="text-[10px] uppercase tracking-widest font-semibold mb-1"
+                style={{ color: "hsl(145, 55%, 38%)" }}
               >
-                <p className="text-sm mb-3" style={{ color: "hsl(45, 95%, 45%)" }}>
-                  ✦ Ta réflexion a été enregistrée.
+                {lifeCase.emoji} Le cas qui t'a été présenté
+              </p>
+              <p className="text-sm font-display mb-2" style={{ color: "hsl(45, 95%, 45%)" }}>
+                {lifeCase.situation}
+              </p>
+              {intuitiveChoice !== null && (
+                <p className="text-xs italic" style={{ color: "hsl(30, 8%, 45%)" }}>
+                  Ton intuition initiale :{" "}
+                  <span style={{ color: "hsl(145, 55%, 38%)", fontWeight: 600 }}>
+                    {lifeCase.options[intuitiveChoice]}
+                  </span>
                 </p>
-                <button
-                  onClick={reshuffle}
-                  className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all"
-                  style={{
-                    background: "hsl(145, 55%, 38%)",
-                    color: "hsl(0, 0%, 100%)",
-                  }}
-                >
-                  Nouveau tirage
-                </button>
-              </motion.div>
-            )}
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+              )}
+            </motion.div>
 
-      {/* Grid - hidden once a cell is revealed */}
-      {!revealed && (
-        <div className="overflow-x-auto">
-          <div
-            className="grid gap-[2px] min-w-[400px]"
-            style={{ gridTemplateColumns: `repeat(16, 1fr)` }}
-          >
-            {shuffledY.map((_, row) =>
-              shuffledX.map((_, col) => (
-                <motion.button
-                  key={`${row}-${col}`}
-                  onClick={() => handleCellClick(row, col)}
-                  className="aspect-square rounded-[3px] transition-all duration-200 cursor-pointer bg-[hsl(40,20%,96%)] hover:bg-[hsl(40,15%,92%)]"
-                  whileHover={{ scale: 1.15 }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                  aria-label={`Case ${row + 1}-${col + 1}`}
-                />
-              ))
-            )}
-          </div>
-        </div>
-      )}
+            {/* Audio interpretation */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.75 }}
+            >
+              <div className="text-center mb-3">
+                <p
+                  className="text-xs uppercase tracking-widest font-semibold"
+                  style={{ color: "hsl(358, 75%, 52%)" }}
+                >
+                  Ton interprétation
+                </p>
+                <p className="text-xs italic mt-1" style={{ color: "hsl(30, 8%, 45%)" }}>
+                  À la lumière de ce signe, quel choix ferais-tu maintenant ?
+                </p>
+              </div>
+              <AudioRecorder />
+            </motion.div>
+
+            {/* Restart */}
+            <div className="mt-8 flex justify-center">
+              <button
+                onClick={restart}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105"
+                style={{
+                  background: "hsl(145, 55%, 38%)",
+                  color: "hsl(0, 0%, 100%)",
+                }}
+              >
+                <RotateCcw size={14} /> Nouveau cas
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
