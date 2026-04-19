@@ -29,6 +29,7 @@ const SandMatrix = () => {
   const [shuffledY, setShuffledY] = useState(() => shuffle(SIGNS));
   const [revealed, setRevealed] = useState<RevealedCell | null>(null);
   const [caseOpen, setCaseOpen] = useState(false);
+  const [finalChoice, setFinalChoice] = useState<number | null>(null);
 
   const restart = useCallback(() => {
     setLifeCase(pickRandomCase());
@@ -36,6 +37,7 @@ const SandMatrix = () => {
     setShuffledX(shuffle(SIGNS));
     setShuffledY(shuffle(SIGNS));
     setRevealed(null);
+    setFinalChoice(null);
     setPhase("case");
   }, []);
 
@@ -209,7 +211,7 @@ const SandMatrix = () => {
                           className="text-[10px] uppercase tracking-widest font-semibold mb-1.5"
                           style={{ color: "hsl(145, 55%, 38%)" }}
                         >
-                          Les 4 propositions
+                          Les 4 propositions et ton intuition initiale
                         </p>
                         <ul className="space-y-1">
                           {lifeCase.options.map((opt, i) => {
@@ -220,7 +222,7 @@ const SandMatrix = () => {
                                 className="text-xs leading-relaxed flex gap-2"
                                 style={{
                                   color: isPicked ? "hsl(145, 55%, 38%)" : "hsl(30, 8%, 35%)",
-                                  fontWeight: isPicked ? 600 : 400,
+                                  fontWeight: isPicked ? 700 : 400,
                                 }}
                               >
                                 <span style={{ color: "hsl(45, 95%, 45%)" }}>
@@ -232,14 +234,6 @@ const SandMatrix = () => {
                           })}
                         </ul>
                       </div>
-                      {intuitiveChoice !== null && (
-                        <p className="text-xs italic" style={{ color: "hsl(30, 8%, 45%)" }}>
-                          Ton intuition initiale :{" "}
-                          <span style={{ color: "hsl(145, 55%, 38%)", fontWeight: 600 }}>
-                            {String.fromCharCode(65 + intuitiveChoice)} — {lifeCase.options[intuitiveChoice]}
-                          </span>
-                        </p>
-                      )}
                     </div>
                   </motion.div>
                 )}
@@ -320,23 +314,67 @@ const SandMatrix = () => {
 
             {/* (Case reminder moved to top of panel) */}
 
-            {/* Audio interpretation */}
+            {/* Final choice + Audio interpretation — 2 columns */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.75 }}
+              className="grid grid-cols-1 md:grid-cols-2 gap-5"
             >
-              <div className="text-center mb-3">
+              {/* LEFT — Final choice among the 4 options */}
+              <div
+                className="rounded-2xl border p-5"
+                style={{ borderColor: "hsl(145, 55%, 38%)", background: "hsl(0, 0%, 100%)" }}
+              >
                 <p
                   className="text-xs uppercase tracking-widest font-semibold"
-                  style={{ color: "hsl(358, 75%, 52%)" }}
+                  style={{ color: "hsl(145, 55%, 38%)" }}
                 >
-                  Ton interprétation
+                  Ton choix définitif
                 </p>
-                <p className="text-xs italic mt-1" style={{ color: "hsl(30, 8%, 45%)" }}>
-                  À la lumière de ce signe, quel choix ferais-tu maintenant ?
+                <p className="text-xs mt-0.5 mb-3" style={{ color: "hsl(30, 8%, 45%)" }}>
+                  À la lumière de ce signe, quelle voie choisis-tu ?
                 </p>
+                <div className="flex flex-col gap-2">
+                  {lifeCase.options.map((opt, i) => {
+                    const isFinal = finalChoice === i;
+                    const wasIntuition = intuitiveChoice === i;
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => setFinalChoice(i)}
+                        className="text-left px-3 py-2 rounded-xl text-xs font-medium transition-all border-2 flex gap-2 items-start"
+                        style={{
+                          borderColor: isFinal
+                            ? "hsl(145, 55%, 38%)"
+                            : "hsl(145, 55%, 38% / 0.25)",
+                          background: isFinal ? "hsl(145, 55%, 38% / 0.12)" : "hsl(0, 0%, 100%)",
+                          color: isFinal ? "hsl(145, 55%, 38%)" : "hsl(30, 8%, 35%)",
+                          fontWeight: isFinal ? 700 : 400,
+                        }}
+                      >
+                        <span style={{ color: "hsl(45, 95%, 45%)", fontWeight: 700 }}>
+                          {String.fromCharCode(65 + i)}.
+                        </span>
+                        <span className="flex-1">{opt}</span>
+                        {wasIntuition && (
+                          <span
+                            className="text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded"
+                            style={{
+                              background: "hsl(45, 95%, 45% / 0.15)",
+                              color: "hsl(45, 95%, 45%)",
+                            }}
+                          >
+                            intuition
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
+
+              {/* RIGHT — Audio recorder */}
               <AudioRecorder />
             </motion.div>
 
