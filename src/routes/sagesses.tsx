@@ -17,7 +17,7 @@ export const Route = createFileRoute("/sagesses")({
       {
         property: "og:description",
         content:
-          "Matrice de Sable et Mur de Synchronicité — explorez les voix du Bénin à travers les 16 signes mères du Fâ.",
+          "Matrice des choix et Mur des consultations — explorez les voix du Bénin à travers les 16 signes mères du Fâ.",
       },
     ],
   }),
