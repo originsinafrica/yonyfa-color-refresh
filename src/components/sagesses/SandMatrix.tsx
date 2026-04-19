@@ -29,6 +29,7 @@ const SandMatrix = () => {
   const [shuffledY, setShuffledY] = useState(() => shuffle(SIGNS));
   const [revealed, setRevealed] = useState<RevealedCell | null>(null);
   const [caseOpen, setCaseOpen] = useState(false);
+  const [finalChoice, setFinalChoice] = useState<number | null>(null);
 
   const restart = useCallback(() => {
     setLifeCase(pickRandomCase());
