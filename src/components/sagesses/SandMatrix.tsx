@@ -211,7 +211,7 @@ const SandMatrix = () => {
                           className="text-[10px] uppercase tracking-widest font-semibold mb-1.5"
                           style={{ color: "hsl(145, 55%, 38%)" }}
                         >
-                          Les 4 propositions
+                          Les 4 propositions et ton intuition initiale
                         </p>
                         <ul className="space-y-1">
                           {lifeCase.options.map((opt, i) => {
@@ -222,7 +222,7 @@ const SandMatrix = () => {
                                 className="text-xs leading-relaxed flex gap-2"
                                 style={{
                                   color: isPicked ? "hsl(145, 55%, 38%)" : "hsl(30, 8%, 35%)",
-                                  fontWeight: isPicked ? 600 : 400,
+                                  fontWeight: isPicked ? 700 : 400,
                                 }}
                               >
                                 <span style={{ color: "hsl(45, 95%, 45%)" }}>
@@ -234,14 +234,6 @@ const SandMatrix = () => {
                           })}
                         </ul>
                       </div>
-                      {intuitiveChoice !== null && (
-                        <p className="text-xs italic" style={{ color: "hsl(30, 8%, 45%)" }}>
-                          Ton intuition initiale :{" "}
-                          <span style={{ color: "hsl(145, 55%, 38%)", fontWeight: 600 }}>
-                            {String.fromCharCode(65 + intuitiveChoice)} — {lifeCase.options[intuitiveChoice]}
-                          </span>
-                        </p>
-                      )}
                     </div>
                   </motion.div>
                 )}
