@@ -46,6 +46,21 @@ const CaseCard = ({ lifeCase, onOpenMatrix }: Props) => {
       {/* Two-column: narrative left, options right */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         <div className="space-y-3">
+          <div className="rounded-xl p-3" style={{ background: "hsl(40, 20%, 96%)" }}>
+            <p
+              className="text-[10px] uppercase tracking-widest font-semibold mb-2"
+              style={{ color: "hsl(145, 55%, 38%)" }}
+            >
+              🎧 Écoute du cas
+            </p>
+            <audio controls className="w-full h-9" preload="none">
+              <source src={`/audio/cases/${lifeCase.id}.mp3`} type="audio/mpeg" />
+              Votre navigateur ne supporte pas l'audio.
+            </audio>
+            <p className="text-[10px] mt-1.5 italic" style={{ color: "hsl(30, 8%, 50%)" }}>
+              Transcription ci-dessous
+            </p>
+          </div>
           <p className="text-sm leading-relaxed" style={{ color: "hsl(30, 8%, 25%)" }}>
             {lifeCase.narrative[0]}
           </p>
@@ -74,12 +89,12 @@ const CaseCard = ({ lifeCase, onOpenMatrix }: Props) => {
                 style={{
                   borderColor: isSelected ? optionAccent(i) : `${optionAccent(i)}55`,
                   background: isSelected ? `${optionAccent(i)}1f` : "hsl(0, 0%, 100%)",
-                  color: isSelected ? optionAccent(i) : "hsl(30, 8%, 35%)",
+                  color: "hsl(30, 8%, 12%)",
                 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <span className="mr-2 font-bold" style={{ color: optionAccent(i) }}>
+                <span className="mr-2 font-bold" style={{ color: "hsl(30, 8%, 12%)" }}>
                   {String.fromCharCode(65 + i)}.
                 </span>
                 {opt}

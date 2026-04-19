@@ -245,9 +245,9 @@ const SandMatrix = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
               className="font-display text-3xl md:text-4xl text-center mb-8"
-              style={{ color: "hsl(45, 95%, 45%)" }}
+              style={{ color: "hsl(30, 8%, 12%)" }}
             >
-              {revealed.signX.name}-{revealed.signY.name}
+              {revealed.signX.name} {revealed.signY.name}
             </motion.h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-center">
@@ -263,12 +263,6 @@ const SandMatrix = () => {
                   size={220}
                   color="hsl(30, 30%, 12%)"
                 />
-                <p
-                  className="text-xs mt-4 tracking-widest uppercase"
-                  style={{ color: "hsl(30, 8%, 50%)" }}
-                >
-                  {revealed.signX.value} × {revealed.signY.value}
-                </p>
               </motion.div>
 
               <motion.div
