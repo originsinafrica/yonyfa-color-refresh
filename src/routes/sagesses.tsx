@@ -11,7 +11,7 @@ export const Route = createFileRoute("/sagesses")({
       {
         name: "description",
         content:
-          "Matrice de Sable et Mur de Synchronicité — explorez les voix du Bénin à travers les 16 signes mères du Fâ.",
+          "Matrice des choix et Mur des consultations — explorez les voix du Bénin à travers les 16 signes mères du Fâ.",
       },
       { property: "og:title", content: "Les Sagesses — YonyFâ" },
       {
@@ -41,7 +41,7 @@ function SagessesPage() {
           {/* Intro */}
           <div className="text-center mb-8">
             <h2 className="font-display text-3xl sm:text-4xl md:text-5xl mb-4 text-foreground">
-              {tab === "matrice" ? "Matrice de Sable" : "Mur de Synchronicité"}
+              {tab === "matrice" ? "Matrice des choix" : "Mur des consultations"}
             </h2>
             <p className="text-sm md:text-base max-w-xl mx-auto leading-relaxed text-muted-foreground">
               {tab === "matrice"
@@ -55,8 +55,8 @@ function SagessesPage() {
             <div className="inline-flex p-1 rounded-full bg-muted border border-border">
               {(
                 [
-                  { id: "matrice" as Tab, label: "Matrice" },
-                  { id: "mur" as Tab, label: "Mur de Synchronicité" },
+                  { id: "matrice" as Tab, label: "Matrice des choix" },
+                  { id: "mur" as Tab, label: "Mur des consultations" },
                 ]
               ).map((t) => (
                 <button
