@@ -142,8 +142,8 @@ const AudioRecorder = ({ onSaved }: Props) => {
         {!audioUrl && !recording && (
           <button
             onClick={startRecording}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all"
-            style={{ background: "hsl(358, 75%, 52%)", color: "hsl(0, 0%, 100%)" }}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-90"
+            style={{ background: "hsl(0, 0%, 0%)", color: "hsl(0, 0%, 100%)" }}
           >
             <Mic size={16} /> Enregistrer mon interprétation
           </button>
