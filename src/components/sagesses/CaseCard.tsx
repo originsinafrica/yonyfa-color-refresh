@@ -74,12 +74,12 @@ const CaseCard = ({ lifeCase, onOpenMatrix }: Props) => {
                 style={{
                   borderColor: isSelected ? optionAccent(i) : `${optionAccent(i)}55`,
                   background: isSelected ? `${optionAccent(i)}1f` : "hsl(0, 0%, 100%)",
-                  color: isSelected ? optionAccent(i) : "hsl(30, 8%, 35%)",
+                  color: "hsl(30, 8%, 12%)",
                 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <span className="mr-2 font-bold" style={{ color: optionAccent(i) }}>
+                <span className="mr-2 font-bold" style={{ color: "hsl(30, 8%, 12%)" }}>
                   {String.fromCharCode(65 + i)}.
                 </span>
                 {opt}
