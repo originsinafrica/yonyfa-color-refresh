@@ -37,6 +37,7 @@ const SandMatrix = () => {
     setShuffledX(shuffle(SIGNS));
     setShuffledY(shuffle(SIGNS));
     setRevealed(null);
+    setFinalChoice(null);
     setPhase("case");
   }, []);
 
