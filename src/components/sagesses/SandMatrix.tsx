@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, RotateCcw } from "lucide-react";
+import { X, RotateCcw, ChevronDown, ChevronUp } from "lucide-react";
 import { SIGNS, shuffle, valueToMatrixIndex, type FongbeSign } from "@/data/fongbe";
 import { DYNAMICS_MATRIX, DYNAMICS_AXIS } from "@/data/dynamics";
 import { pickRandomCase, type LifeCase } from "@/data/cases";
@@ -28,6 +28,7 @@ const SandMatrix = () => {
   const [shuffledX, setShuffledX] = useState(() => shuffle(SIGNS));
   const [shuffledY, setShuffledY] = useState(() => shuffle(SIGNS));
   const [revealed, setRevealed] = useState<RevealedCell | null>(null);
+  const [caseOpen, setCaseOpen] = useState(false);
 
   const restart = useCallback(() => {
     setLifeCase(pickRandomCase());
@@ -158,6 +159,65 @@ const SandMatrix = () => {
               <X size={18} />
             </button>
 
+            {/* Collapsible case reminder at top */}
+            <div className="mb-6 mr-12">
+              <button
+                onClick={() => setCaseOpen((v) => !v)}
+                className="w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl transition-all hover:opacity-90"
+                style={{ background: "hsl(40, 20%, 96%)" }}
+                aria-expanded={caseOpen}
+              >
+                <span className="flex items-center gap-2 text-left">
+                  <span className="text-base">{lifeCase.emoji}</span>
+                  <span
+                    className="text-[10px] uppercase tracking-widest font-semibold"
+                    style={{ color: "hsl(145, 55%, 38%)" }}
+                  >
+                    Rappel du cas
+                  </span>
+                  <span className="text-xs font-display truncate" style={{ color: "hsl(45, 95%, 45%)" }}>
+                    — {lifeCase.label}
+                  </span>
+                </span>
+                {caseOpen ? (
+                  <ChevronUp size={16} style={{ color: "hsl(30, 8%, 45%)" }} />
+                ) : (
+                  <ChevronDown size={16} style={{ color: "hsl(30, 8%, 45%)" }} />
+                )}
+              </button>
+              <AnimatePresence initial={false}>
+                {caseOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-4 pt-3 pb-1">
+                      <p className="text-sm font-display mb-2" style={{ color: "hsl(45, 95%, 45%)" }}>
+                        {lifeCase.situation}
+                      </p>
+                      <p className="text-xs leading-relaxed mb-1.5" style={{ color: "hsl(30, 8%, 30%)" }}>
+                        {lifeCase.narrative[0]}
+                      </p>
+                      <p className="text-xs leading-relaxed mb-2" style={{ color: "hsl(30, 8%, 30%)" }}>
+                        {lifeCase.narrative[1]}
+                      </p>
+                      {intuitiveChoice !== null && (
+                        <p className="text-xs italic" style={{ color: "hsl(30, 8%, 45%)" }}>
+                          Ton intuition initiale :{" "}
+                          <span style={{ color: "hsl(145, 55%, 38%)", fontWeight: 600 }}>
+                            {lifeCase.options[intuitiveChoice]}
+                          </span>
+                        </p>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             <motion.h3
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -217,7 +277,7 @@ const SandMatrix = () => {
                   className="text-[10px] uppercase tracking-widest mb-1.5 font-semibold"
                   style={{ color: "hsl(30, 8%, 45%)" }}
                 >
-                  Invitation à considérer les valeurs
+                  Résonances à explorer
                 </p>
                 <p className="font-display text-base md:text-lg flex items-center justify-center gap-2 flex-wrap">
                   <span style={{ color: "hsl(145, 55%, 38%)" }}>{revealed.axisYWord}</span>
@@ -230,32 +290,7 @@ const SandMatrix = () => {
               <div className="flex-1 h-px" style={{ background: "hsl(145, 55%, 38% / 0.25)" }} />
             </motion.div>
 
-            {/* Reminder of the case */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.65 }}
-              className="mb-6 p-4 rounded-xl"
-              style={{ background: "hsl(40, 20%, 96%)" }}
-            >
-              <p
-                className="text-[10px] uppercase tracking-widest font-semibold mb-1"
-                style={{ color: "hsl(145, 55%, 38%)" }}
-              >
-                {lifeCase.emoji} Le cas qui t'a été présenté
-              </p>
-              <p className="text-sm font-display mb-2" style={{ color: "hsl(45, 95%, 45%)" }}>
-                {lifeCase.situation}
-              </p>
-              {intuitiveChoice !== null && (
-                <p className="text-xs italic" style={{ color: "hsl(30, 8%, 45%)" }}>
-                  Ton intuition initiale :{" "}
-                  <span style={{ color: "hsl(145, 55%, 38%)", fontWeight: 600 }}>
-                    {lifeCase.options[intuitiveChoice]}
-                  </span>
-                </p>
-              )}
-            </motion.div>
+            {/* (Case reminder moved to top of panel) */}
 
             {/* Audio interpretation */}
             <motion.div
