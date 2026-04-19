@@ -4,7 +4,7 @@ import { X, RotateCcw, ChevronDown, ChevronUp } from "lucide-react";
 import { SIGNS, shuffle, valueToMatrixIndex, type FongbeSign } from "@/data/fongbe";
 import { DYNAMICS_MATRIX, DYNAMICS_AXIS } from "@/data/dynamics";
 import { pickRandomCase, type LifeCase } from "@/data/cases";
-import CombinedTrace from "./CombinedTrace";
+import DotIdeogram from "./DotIdeogram";
 import SignDisplay from "./SignDisplay";
 import CaseCard from "./CaseCard";
 import AudioRecorder from "./AudioRecorder";
@@ -204,11 +204,39 @@ const SandMatrix = () => {
                       <p className="text-xs leading-relaxed mb-2" style={{ color: "hsl(30, 8%, 30%)" }}>
                         {lifeCase.narrative[1]}
                       </p>
+                      <div className="mt-3 mb-2">
+                        <p
+                          className="text-[10px] uppercase tracking-widest font-semibold mb-1.5"
+                          style={{ color: "hsl(145, 55%, 38%)" }}
+                        >
+                          Les 4 propositions
+                        </p>
+                        <ul className="space-y-1">
+                          {lifeCase.options.map((opt, i) => {
+                            const isPicked = intuitiveChoice === i;
+                            return (
+                              <li
+                                key={i}
+                                className="text-xs leading-relaxed flex gap-2"
+                                style={{
+                                  color: isPicked ? "hsl(145, 55%, 38%)" : "hsl(30, 8%, 35%)",
+                                  fontWeight: isPicked ? 600 : 400,
+                                }}
+                              >
+                                <span style={{ color: "hsl(45, 95%, 45%)" }}>
+                                  {String.fromCharCode(65 + i)}.
+                                </span>
+                                <span>{opt}</span>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
                       {intuitiveChoice !== null && (
                         <p className="text-xs italic" style={{ color: "hsl(30, 8%, 45%)" }}>
                           Ton intuition initiale :{" "}
                           <span style={{ color: "hsl(145, 55%, 38%)", fontWeight: 600 }}>
-                            {lifeCase.options[intuitiveChoice]}
+                            {String.fromCharCode(65 + intuitiveChoice)} — {lifeCase.options[intuitiveChoice]}
                           </span>
                         </p>
                       )}
@@ -235,11 +263,11 @@ const SandMatrix = () => {
                 transition={{ delay: 0.25, duration: 0.5 }}
                 className="flex flex-col items-center justify-center"
               >
-                <CombinedTrace
+                <DotIdeogram
                   leftCode={revealed.signX.code}
                   rightCode={revealed.signY.code}
-                  size={200}
-                  color="hsl(45, 95%, 45%)"
+                  size={220}
+                  color="hsl(30, 30%, 12%)"
                 />
                 <p
                   className="text-xs mt-4 tracking-widest uppercase"
